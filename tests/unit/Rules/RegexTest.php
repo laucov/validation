@@ -38,8 +38,6 @@ use Tests\RuleTestCase;
  */
 class RegexTest extends RuleTestCase
 {
-    protected string $className = Regex::class;
-
     public function dataProvider(): array
     {
         return [
