@@ -28,13 +28,13 @@
 
 namespace Laucov\Validation\Rules;
 
-use Laucov\Validation\Interfaces\RuleInterface;
+use Laucov\Validation\AbstractRule;
 
 /**
  * Requires a value to contain a specific text.
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
-class Contains implements RuleInterface
+class Contains extends AbstractRule
 {
     /**
      * List of strings that the value may contain to satisfy this rule.

@@ -28,13 +28,13 @@
 
 namespace Laucov\Validation\Rules;
 
-use Laucov\Validation\Interfaces\RuleInterface;
+use Laucov\Validation\AbstractRule;
 
 /**
  * Requires a value to contain a non-empty value.
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Required implements RuleInterface
+class Required extends AbstractRule
 {
     /**
      * Create the rule instance.

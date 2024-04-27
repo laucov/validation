@@ -26,20 +26,39 @@
  * @copyright © 2024 Laucov Serviços de Tecnologia da Informação Ltda.
  */
 
-namespace Laucov\Validation\Interfaces;
+namespace Laucov\Validation;
+
+use Laucov\Validation\Interfaces\RuleInterface;
 
 /**
  * Validates values.
  */
-interface RuleInterface
+abstract class AbstractRule implements RuleInterface
 {
     /**
-     * Set data to contextualize the next validated values.
+     * Context data.
      */
-    public function setData(array|object $data): void;
+    protected object $data;
 
     /**
      * Validate a single value.
      */
-    public function validate(mixed $value): bool;
+    public abstract function validate(mixed $value): bool;
+
+    /**
+     * Set the data that will contextualize the next validated values.
+     */
+    public function setData(array|object $data): void
+    {
+        $this->data = (object) $data;
+    }
+
+    /**
+     * Get the data that is contextualizing the current validated value.
+     */
+    protected function getData(): object
+    {
+        $this->data ??= new \stdClass();
+        return $this->data;
+    }
 }

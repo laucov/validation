@@ -28,13 +28,13 @@
 
 namespace Laucov\Validation\Rules;
 
-use Laucov\Validation\Interfaces\RuleInterface;
+use Laucov\Validation\AbstractRule;
 
 /**
  * Requires a value to have a minimum and/or a maximum length.
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Length implements RuleInterface
+class Length extends AbstractRule
 {
     /**
      * Create the rule instance.

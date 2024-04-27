@@ -28,13 +28,13 @@
 
 namespace Laucov\Validation\Rules;
 
-use Laucov\Validation\Interfaces\RuleInterface;
+use Laucov\Validation\AbstractRule;
 
 /**
  * Requires a value to match a RegEx pattern.
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
-class Regex implements RuleInterface
+class Regex extends AbstractRule
 {
     /**
      * Create the rule instance.
