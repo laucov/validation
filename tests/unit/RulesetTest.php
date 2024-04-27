@@ -32,6 +32,7 @@ namespace Tests\Unit;
 
 use Laucov\Validation\Rules\Length;
 use Laucov\Validation\Rules\Regex;
+use Laucov\Validation\Rules\RequiredWith;
 use Laucov\Validation\Ruleset;
 use PHPUnit\Framework\TestCase;
 
@@ -40,10 +41,13 @@ use PHPUnit\Framework\TestCase;
  */
 class RulesetTest extends TestCase
 {
+    protected Ruleset $ruleset;
+
     /**
      * @covers ::addRule
      * @covers ::getErrors
      * @covers ::validate
+     * @uses Laucov\Validation\AbstractRule::setData
      * @uses Laucov\Validation\Rules\Length::__construct
      * @uses Laucov\Validation\Rules\Length::validate
      * @uses Laucov\Validation\Rules\Regex::__construct
@@ -51,35 +55,76 @@ class RulesetTest extends TestCase
      */
     public function testCanAddRulesAndValidate(): void
     {
-        // Create ruleset instance.
-        $ruleset = new Ruleset();
-
         // Add rules.
-        $ruleset->addRule(new Length(4), new Regex('/^foo/'));
+        $this->ruleset->addRule(new Length(4), new Regex('/^foo/'));
 
         // Violate rule #1.
-        $this->assertFalse($ruleset->validate('foo'));
-        $errors = $ruleset->getErrors();
+        $this->assertFalse($this->ruleset->validate('foo'));
+        $errors = $this->ruleset->getErrors();
         $this->assertIsArray($errors);
         $this->assertCount(1, $errors);
         $this->assertInstanceOf(Length::class, $errors[0]);
 
         // Violate rule #2.
-        $this->assertFalse($ruleset->validate('barfoo'));
-        $errors = $ruleset->getErrors();
+        $this->assertFalse($this->ruleset->validate('barfoo'));
+        $errors = $this->ruleset->getErrors();
         $this->assertIsArray($errors);
         $this->assertCount(1, $errors);
         $this->assertInstanceOf(Regex::class, $errors[0]);
 
         // Violate both rules.
-        $this->assertFalse($ruleset->validate('bar'));
-        $errors = $ruleset->getErrors();
+        $this->assertFalse($this->ruleset->validate('bar'));
+        $errors = $this->ruleset->getErrors();
         $this->assertIsArray($errors);
         $this->assertCount(2, $errors);
         $this->assertInstanceOf(Length::class, $errors[0]);
         $this->assertInstanceOf(Regex::class, $errors[1]);
 
         // Test valid value.
-        $this->assertTrue($ruleset->validate('foobar'));
+        $this->assertTrue($this->ruleset->validate('foobar'));
+    }
+
+    /**
+     * @covers ::setData
+     * @uses Laucov\Validation\AbstractRule::setData
+     * @uses Laucov\Validation\AbstractRule::getData
+     * @uses Laucov\Validation\Rules\Regex::__construct
+     * @uses Laucov\Validation\Rules\Regex::validate
+     * @uses Laucov\Validation\Rules\RequiredWith::__construct
+     * @uses Laucov\Validation\Rules\RequiredWith::validate
+     * @uses Laucov\Validation\Ruleset::addRule
+     * @uses Laucov\Validation\Ruleset::getErrors
+     * @uses Laucov\Validation\Ruleset::validate
+     */
+    public function testCanUseData(): void
+    {
+        // Create data.
+        $data = [
+            'name' => 'Machado de Assis',
+            'birth' => '1839-07-21',
+            'country' => 'BRA',
+            'state' => 'MN',
+        ];
+
+        // Set initial rules.
+        $this->ruleset
+            ->setData($data)
+            ->addRule(new Regex('/^[A-Za-z\s]*$/'))
+            ->addRule(new RequiredWith('state', 'country'));
+        
+        // Validate.
+        $this->assertTrue($this->ruleset->validate('Rio de Janeiro'));
+        $this->assertFalse($this->ruleset->validate(''));
+
+        // Get errors.
+        $errors = $this->ruleset->getErrors();
+        $this->assertIsArray($errors);
+        $this->assertCount(1, $errors);
+        $this->assertInstanceOf(RequiredWith::class, $errors[0]);
+    }
+
+    protected function setUp(): void
+    {
+        $this->ruleset = new Ruleset();
     }
 }

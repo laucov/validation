@@ -36,6 +36,11 @@ use Laucov\Validation\Interfaces\RuleInterface;
 class Ruleset
 {
     /**
+     * Context data.
+     */
+    protected array|object $data = [];
+
+    /**
      * Current errors.
      * 
      * @var array<string>
@@ -67,6 +72,15 @@ class Ruleset
     }
 
     /**
+     * Set data to contextualize the next validated values.
+     */
+    public function setData(array|object $data): static
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
      * Validate a value with all registered rules.
      */
     public function validate(mixed $value): bool
@@ -74,6 +88,7 @@ class Ruleset
         $this->errors = [];
 
         foreach ($this->rules as $rule) {
+            $rule->setData($this->data);
             if (!$rule->validate($value)) {
                 $this->errors[] = $rule;
             }

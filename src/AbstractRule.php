@@ -46,7 +46,7 @@ abstract class AbstractRule implements RuleInterface
     public abstract function validate(mixed $value): bool;
 
     /**
-     * Set the data that will contextualize the next validated values.
+     * Set data to contextualize the next validated values.
      */
     public function setData(array|object $data): void
     {
