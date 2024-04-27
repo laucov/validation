@@ -121,11 +121,13 @@ abstract class RuleTestCase extends TestCase
      * 
      * Assert that the valid values correspond to the indexes in `$expected`.
      * 
-     * @param RuleInterface $rule Rule to test validation
-     * @param array $expected Valid indexes from `ruleProvider()`'s values
+     * @param RuleInterface $rule Rule to test validation.
+     * @param array $expected Valid indexes from `ruleProvider()`'s values.
      */
-    protected function assertValidation(RuleInterface $rule, array $expected): void
-    {
+    protected function assertValidation(
+        RuleInterface $rule,
+        array $expected,
+    ): void {
         $actual = array_filter($this->getValues(), [$rule, 'validate']);
         $actual = '[' . implode(', ', array_keys($actual)) . ']';
         $expected = '[' . implode(', ', $expected) . ']';
