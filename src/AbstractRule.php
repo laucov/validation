@@ -43,7 +43,7 @@ abstract class AbstractRule implements RuleInterface
     /**
      * Validate a single value.
      */
-    public abstract function validate(mixed $value): bool;
+    abstract public function validate(mixed $value): bool;
 
     /**
      * Set data to contextualize the next validated values.

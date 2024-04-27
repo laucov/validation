@@ -111,7 +111,7 @@ class RulesetTest extends TestCase
             ->setData($data)
             ->addRule(new Regex('/^[A-Za-z\s]*$/'))
             ->addRule(new RequiredWith('state', 'country'));
-        
+
         // Validate.
         $this->assertTrue($this->ruleset->validate('Rio de Janeiro'));
         $this->assertFalse($this->ruleset->validate(''));
