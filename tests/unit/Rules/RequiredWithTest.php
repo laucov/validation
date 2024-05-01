@@ -76,7 +76,7 @@ class RequiredWithTest extends RuleTestCase
      */
     public function testIsPropertyAttribute(): void
     {
-        $this->assertIsPropertyAttribute(RequiredWith::class, false);
+        $this->assertIsPropertyAttribute(RequiredWith::class, true);
     }
 
     protected function getValues(): array

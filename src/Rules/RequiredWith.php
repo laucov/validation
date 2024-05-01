@@ -33,7 +33,7 @@ use Laucov\Validation\AbstractRule;
 /**
  * Requires a value to contain a non-empty value.
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY|\Attribute::IS_REPEATABLE)]
 class RequiredWith extends AbstractRule
 {
     /**
