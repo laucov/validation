@@ -38,6 +38,9 @@ use Tests\RuleTestCase;
  */
 class RequiredWithTest extends RuleTestCase
 {
+    /**
+     * Provides arguments and expectations for validation tests.
+     */
     public function dataProvider(): array
     {
         $data = [
@@ -79,6 +82,9 @@ class RequiredWithTest extends RuleTestCase
         $this->assertIsPropertyAttribute(RequiredWith::class, true);
     }
 
+    /**
+     * Get values to validate.
+     */
     protected function getValues(): array
     {
         return [

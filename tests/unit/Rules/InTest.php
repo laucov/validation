@@ -38,6 +38,9 @@ use Tests\RuleTestCase;
  */
 class InTest extends RuleTestCase
 {
+    /**
+     * Provides arguments and expectations for validation tests.
+     */
     public function dataProvider(): array
     {
         return [
@@ -84,6 +87,9 @@ class InTest extends RuleTestCase
         $this->assertIsPropertyAttribute(In::class, true);
     }
 
+    /**
+     * Get values to validate.
+     */
     protected function getValues(): array
     {
         return [

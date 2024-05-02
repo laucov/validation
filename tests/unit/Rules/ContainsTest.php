@@ -38,6 +38,9 @@ use Tests\RuleTestCase;
  */
 class ContainsTest extends RuleTestCase
 {
+    /**
+     * Provides arguments and expectations for validation tests.
+     */
     public function dataProvider(): array
     {
         return [
@@ -75,6 +78,9 @@ class ContainsTest extends RuleTestCase
         $this->assertIsPropertyAttribute(Contains::class, true);
     }
 
+    /**
+     * Get values to validate.
+     */
     protected function getValues(): array
     {
         return [

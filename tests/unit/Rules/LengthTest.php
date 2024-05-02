@@ -38,6 +38,9 @@ use Tests\RuleTestCase;
  */
 class LengthTest extends RuleTestCase
 {
+    /**
+     * Provides arguments and expectations for validation tests.
+     */
     public function dataProvider(): array
     {
         return [
@@ -76,6 +79,9 @@ class LengthTest extends RuleTestCase
         $this->assertIsPropertyAttribute(Length::class);
     }
 
+    /**
+     * Get values to validate.
+     */
     protected function getValues(): array
     {
         return [

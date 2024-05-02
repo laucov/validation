@@ -38,6 +38,9 @@ use Tests\RuleTestCase;
  */
 class RegexTest extends RuleTestCase
 {
+    /**
+     * Provides arguments and expectations for validation tests.
+     */
     public function dataProvider(): array
     {
         return [
@@ -75,6 +78,9 @@ class RegexTest extends RuleTestCase
         $this->assertIsPropertyAttribute(Regex::class, true);
     }
 
+    /**
+     * Get values to validate.
+     */
     protected function getValues(): array
     {
         return [

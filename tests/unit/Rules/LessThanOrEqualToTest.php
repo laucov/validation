@@ -38,6 +38,9 @@ use Tests\RuleTestCase;
  */
 class LessThanOrEqualToTest extends RuleTestCase
 {
+    /**
+     * Provides arguments and expectations for validation tests.
+     */
     public function dataProvider(): array
     {
         return [
@@ -81,6 +84,9 @@ class LessThanOrEqualToTest extends RuleTestCase
         $this->assertIsPropertyAttribute(LessThanOrEqualTo::class, true);
     }
 
+    /**
+     * Get values to validate.
+     */
     protected function getValues(): array
     {
         return [
