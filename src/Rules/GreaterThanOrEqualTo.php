@@ -33,7 +33,7 @@ use Laucov\Validation\AbstractRule;
 /**
  * Requires a value to be greater than or equal to the provided parameter.
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY|\Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class GreaterThanOrEqualTo extends AbstractRule
 {
     /**

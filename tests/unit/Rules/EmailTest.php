@@ -54,7 +54,7 @@ class EmailTest extends RuleTestCase
      */
     public function testCanValidate(array $arguments, array $expected): void
     {
-		$rule = new Email(...$arguments);
+        $rule = new Email(...$arguments);
         $this->assertValidation($rule, $expected);
     }
 

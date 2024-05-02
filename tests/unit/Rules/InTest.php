@@ -63,7 +63,7 @@ class InTest extends RuleTestCase
      */
     public function testCanValidate(array $arguments, array $expected): void
     {
-		$rule = new In(...$arguments);
+        $rule = new In(...$arguments);
         $this->assertValidation($rule, $expected);
     }
 
