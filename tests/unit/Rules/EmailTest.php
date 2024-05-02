@@ -41,9 +41,9 @@ class MyRuleTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [[], [0, 1]],
-            [[false], [0, 1]],
-            [[true], [0, 1, 2, 3]],
+            [[], [0, 1, 8]],
+            [[false], [0, 1, 8]],
+            [[true], [0, 1, 2, 3, 8]],
         ];
     }
 
@@ -82,6 +82,11 @@ class MyRuleTest extends RuleTestCase
             1 => 'MR-joseph-someone@somewhere.org',
             2 => 'SR-josé-alguém@algum-lugar.org',
             3 => '字@domain.com',
+            4 => 'not-an-email',
+            5 => 'mary@domínio.com',
+            6 => 'someone@localhost',
+            7 => 'invalid name@domain.net',
+            8 => 'valid+name@domain.net',
         ];
     }
 }
