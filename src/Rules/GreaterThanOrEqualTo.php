@@ -31,7 +31,7 @@ namespace Laucov\Validation\Rules;
 use Laucov\Validation\AbstractRule;
 
 /**
- * Requires a value to have a minimum and/or a maximum length.
+ * Requires a value to be greater than or equal to the provided parameter.
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY|\Attribute::IS_REPEATABLE)]
 class GreaterThanOrEqualTo extends AbstractRule
