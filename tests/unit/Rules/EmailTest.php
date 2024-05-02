@@ -36,7 +36,7 @@ use Tests\RuleTestCase;
 /**
  * @coversDefaultClass \Laucov\Validation\Rules\Email
  */
-class MyRuleTest extends RuleTestCase
+class EmailTest extends RuleTestCase
 {
     public function dataProvider(): array
     {
