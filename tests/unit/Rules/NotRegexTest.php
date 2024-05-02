@@ -35,6 +35,7 @@ use Tests\RuleTestCase;
 
 /**
  * @coversDefaultClass \Laucov\Validation\Rules\NotRegex
+ * @todo Test non-string values.
  */
 class NotRegexTest extends RuleTestCase
 {
