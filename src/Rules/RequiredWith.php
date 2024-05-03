@@ -52,6 +52,16 @@ class RequiredWith extends AbstractRule
     }
 
     /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    public function getInfo(): array
+    {
+        return ['keys' => implode(', ', $this->keys)];
+    }
+
+    /**
      * Validate a single value.
      */
     public function validate(mixed $value): bool

@@ -52,12 +52,14 @@ class EmailTest extends RuleTestCase
 
     /**
      * @covers ::__construct
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
     public function testCanValidate(array $arguments, array $expected): void
     {
         $rule = new Email(...$arguments);
+        $this->assertRuleInfo($rule, []);
         $this->assertValidation($rule, $expected);
     }
 

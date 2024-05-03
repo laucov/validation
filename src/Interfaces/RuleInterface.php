@@ -34,6 +34,13 @@ namespace Laucov\Validation\Interfaces;
 interface RuleInterface
 {
     /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    public function getInfo(): array;
+
+    /**
      * Set data to contextualize the next validated values.
      */
     public function setData(array|object $data): void;

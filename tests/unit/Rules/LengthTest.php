@@ -44,22 +44,28 @@ class LengthTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [[6], [0, 1, 2, 3, 6, 7, 8]],
-            [[0, 6], [0, 4, 5, 6, 7, 8]],
-            [[6, 6], [0, 6, 7, 8]],
-            [[14], [1, 2, 3]],
-            [[14, 14], [1, 2]],
+            [[6], ['min' => '6', 'max' => ''], [0, 1, 2, 3, 6, 7, 8]],
+            [[0, 6], ['min' => '0', 'max' => '6'], [0, 4, 5, 6, 7, 8]],
+            [[6, 6], ['min' => '6', 'max' => '6'], [0, 6, 7, 8]],
+            [[14], ['min' => '14', 'max' => ''], [1, 2, 3]],
+            [[14, 14], ['min' => '14', 'max' => '14'], [1, 2]],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
-        $this->assertValidation(new Length(...$arguments), $expected);
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
+        $rule = new Length(...$arguments);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

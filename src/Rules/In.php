@@ -29,6 +29,7 @@
 namespace Laucov\Validation\Rules;
 
 use Laucov\Validation\AbstractRule;
+use Laucov\Validation\Rules\Traits\ValueRuleTrait;
 
 /**
  * Requires a value to be in a list.
@@ -36,6 +37,8 @@ use Laucov\Validation\AbstractRule;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class In extends AbstractRule
 {
+    use ValueRuleTrait;
+
     /**
      * Create the rule instance.
      */
@@ -50,6 +53,16 @@ class In extends AbstractRule
          */
         protected bool $strict,
     ) {
+    }
+
+    /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    public function getInfo(): array
+    {
+        return ['values' => $this->formatList($this->values)];
     }
 
     /**

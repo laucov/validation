@@ -117,6 +117,26 @@ abstract class RuleTestCase extends TestCase
     }
 
     /**
+     * Assert the rule info output.
+     */
+    protected function assertRuleInfo(RuleInterface $rule, array $expected): void
+    {
+        // Get info.
+        $actual = $rule->getInfo();
+        $message = 'Assert rule information output.';
+
+        // Compare keys and values.
+        $this->assertContainsOnly('string', $actual);
+        foreach ($expected as $key => $value) {
+            $this->assertArrayHasKey($key, $actual, $message);
+            $this->assertSame($value, $actual[$key], $message);
+        }
+
+        // Check size.
+        $this->assertSameSize($expected, $actual, $message);
+    }
+
+    /**
      * Test all values from `ruleProvider()` with `$rule->validate()`.
      * 
      * Assert that the valid values correspond to the indexes in `$expected`.

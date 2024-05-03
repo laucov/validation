@@ -43,13 +43,26 @@ class Length extends AbstractRule
         /**
          * Minimum length.
          */
-        public int $minimum = 0,
+        protected int $minimum = 0,
 
         /**
          * Maximum length.
          */
-        public null|int $maximum = null,
+        protected null|int $maximum = null,
     ) {
+    }
+
+    /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    public function getInfo(): array
+    {
+        return [
+            'min' => (string) $this->minimum,
+            'max' => (string) $this->maximum ?? '',
+        ];
     }
 
     /**

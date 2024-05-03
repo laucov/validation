@@ -45,21 +45,43 @@ class RegexTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [['/^\p{L}+$/'], [8]],
-            [['/\.com$/'], [2, 3]],
-            [['/^[A-Za-z\d\s\.]+$/'], [0, 1, 6, 7, 8]],
-            [['/^.+[@\?\.]+.+$/'], [2, 3, 4, 5]],
+            [
+                ['/^\p{L}+$/'],
+                ['pattern' => '/^\p{L}+$/'],
+                [8],
+            ],
+            [
+                ['/\.com$/'],
+                ['pattern' => '/\.com$/'],
+                [2, 3],
+            ],
+            [
+                ['/^[A-Za-z\d\s\.]+$/'],
+                ['pattern' => '/^[A-Za-z\d\s\.]+$/'],
+                [0, 1, 6, 7, 8],
+            ],
+            [
+                ['/^.+[@\?\.]+.+$/'],
+                ['pattern' => '/^.+[@\?\.]+.+$/'],
+                [2, 3, 4, 5],
+            ],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
-        $this->assertValidation(new Regex(...$arguments), $expected);
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
+        $rule = new Regex(...$arguments);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

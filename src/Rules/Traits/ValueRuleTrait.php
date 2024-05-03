@@ -26,49 +26,34 @@
  * @copyright © 2024 Laucov Serviços de Tecnologia da Informação Ltda.
  */
 
-namespace Laucov\Validation\Rules;
-
-use Laucov\Validation\AbstractRule;
-use Laucov\Validation\Rules\Traits\ValueRuleTrait;
+namespace Laucov\Validation\Rules\Traits;
 
 /**
- * Requires a value to be greater than or equal to the provided parameter.
+ * Provides methods for rules that handle a value or a list as its main parameters.
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
-class GreaterThanOrEqualTo extends AbstractRule
+trait ValueRuleTrait
 {
-    use ValueRuleTrait;
-
     /**
-     * Create the rule instance.
+     * Format the given list of values as a comma-separated list.
      */
-    public function __construct(
-        /**
-         * Value to compare.
-         */
-        protected bool|int|float|string $value,
-    ) {
+    protected function formatList(array $values): string
+    {
+        // Format each value.
+        $values = array_map([$this, 'formatValue'], $values);
+
+        // Join as a list.
+        return implode(', ', $values);
     }
 
     /**
-     * Get the rule's info.
-     * 
-     * @return array<string>
+     * Format the given value as a string.
      */
-    public function getInfo(): array
+    protected function formatValue(mixed $value): string
     {
-        return ['value' => $this->formatValue($this->value)];
-    }
-
-    /**
-     * Validate a single value.
-     */
-    public function validate(mixed $value): bool
-    {
-        if (!is_scalar($value)) {
-            return false;
-        }
-
-        return $value >= $this->value;
+        // Quote or export value.
+        return match (gettype($value)) {
+            'string' => '"' . $value . '"',
+            default => var_export($value, true),
+        };
     }
 }

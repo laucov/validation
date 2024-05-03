@@ -44,27 +44,34 @@ class GreaterThanTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [[80], [0, 2, 6, 8]],
-            [[0], [0, 2, 3, 5, 6, 7, 8]],
-            [[1], [0, 2, 5, 6, 7, 8]],
-            [[-13.00000001], [0, 1, 2, 5, 6, 7, 8, 9]],
-            [['foobar'], []],
-            [['eoobar'], []],
-            [['Foobar'], []],
-            [['Eoobar'], [0]],
-            [[true], []],
-            [[false], [0, 1, 2, 3, 5, 6, 7, 8, 10]],
+            [[80], ['value' => '80'], [0, 2, 6, 8]],
+            [[0], ['value' => '0'], [0, 2, 3, 5, 6, 7, 8]],
+            [[1], ['value' => '1'], [0, 2, 5, 6, 7, 8]],
+            [[-13.00000001], ['value' => '-13.00000001'], [0, 1, 2, 5, 6, 7, 8, 9]],
+            [['foobar'], ['value' => '"foobar"'], []],
+            [['eoobar'], ['value' => '"eoobar"'], []],
+            [['Foobar'], ['value' => '"Foobar"'], []],
+            [['Eoobar'], ['value' => '"Eoobar"'], [0]],
+            [[true], ['value' => 'true'], []],
+            [[false], ['value' => 'false'], [0, 1, 2, 3, 5, 6, 7, 8, 10]],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::getInfo
+     * @covers ::formatValue
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
-        $this->assertValidation(new GreaterThan(...$arguments), $expected);
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
+        $rule = new GreaterThan(...$arguments);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

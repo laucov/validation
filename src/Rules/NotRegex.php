@@ -43,8 +43,18 @@ class NotRegex extends AbstractRule
         /**
          * Validation pattern.
          */
-        public string $pattern,
+        protected string $pattern,
     ) {
+    }
+
+    /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    public function getInfo(): array
+    {
+        return ['pattern' => $this->pattern];
     }
 
     /**

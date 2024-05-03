@@ -41,6 +41,13 @@ abstract class AbstractRule implements RuleInterface
     protected object $data;
 
     /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    abstract public function getInfo(): array;
+
+    /**
      * Validate a single value.
      */
     abstract public function validate(mixed $value): bool;

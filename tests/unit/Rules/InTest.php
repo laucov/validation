@@ -44,30 +44,85 @@ class InTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [[[-16, 128], false], [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30]],
-            [[[-16, 128], true], [2, 4]],
-            [[[-16.0, 128.0], false], [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30]],
-            [[[-16.0, 128.0], true], [5, 11]],
-            [[['-16.0', '128.0'], false], [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30]],
-            [[['-16.0', '128.0'], true], [22, 29]],
-            [[['-16.000', '128.000'], false], [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30]],
-            [[['-16.000', '128.000'], true], [23, 30]],
-            [[[0], false], [0, 3, 8, 13, 20, 26]],
-            [[[0], true], [3]],
-            [[['foo', 'bar'], false], [1, 17, 18]],
-            [[['foo', 'bar'], true], [17, 18]],
+            [
+                [[-16, 128], false],
+                ['values' => '-16, 128'],
+                [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30],
+            ],
+            [
+                [[-16, 128], true],
+                ['values' => '-16, 128'],
+                [2, 4],
+            ],
+            [
+                [[-16.0, 128.0], false],
+                ['values' => '-16.0, 128.0'],
+                [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30],
+            ],
+            [
+                [[-16.0, 128.0], true],
+                ['values' => '-16.0, 128.0'],
+                [5, 11],
+            ],
+            [
+                [['-16.0', '128.0'], false],
+                ['values' => '"-16.0", "128.0"'],
+                [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30],
+            ],
+            [
+                [['-16.0', '128.0'], true],
+                ['values' => '"-16.0", "128.0"'],
+                [22, 29],
+            ],
+            [
+                [['-16.000', '128.000'], false],
+                ['values' => '"-16.000", "128.000"'],
+                [1, 2, 4, 5, 11, 19, 21, 22, 23, 29, 30],
+            ],
+            [
+                [['-16.000', '128.000'], true],
+                ['values' => '"-16.000", "128.000"'],
+                [23, 30],
+            ],
+            [
+                [[0], false],
+                ['values' => '0'],
+                [0, 3, 8, 13, 20, 26],
+            ],
+            [
+                [[0], true],
+                ['values' => '0'],
+                [3],
+            ],
+            [
+                [['foo', 'bar'], false],
+                ['values' => '"foo", "bar"'],
+                [1, 17, 18],
+            ],
+            [
+                [['foo', 'bar'], true],
+                ['values' => '"foo", "bar"'],
+                [17, 18],
+            ],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::getInfo
+     * @covers ::formatList
+     * @covers ::formatValue
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
         $rule = new In(...$arguments);
-        $this->assertValidation($rule, $expected);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

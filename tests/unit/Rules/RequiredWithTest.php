@@ -50,16 +50,37 @@ class RequiredWithTest extends RuleTestCase
         ];
 
         return [
-            [['name'], $data, [0, 1, 2, 6, 8]],
-            [['name', 'age'], $data, [0, 1, 2, 6, 8]],
-            [['address'], $data, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]],
-            [['email', 'gender'], $data, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]],
+            [
+                ['name'],
+                $data,
+                ['keys' => 'name'],
+                [0, 1, 2, 6, 8],
+            ],
+            [
+                ['name', 'age'],
+                $data,
+                ['keys' => 'name, age'],
+                [0, 1, 2, 6, 8],
+            ],
+            [
+                ['address'],
+                $data,
+                ['keys' => 'address'],
+                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            ],
+            [
+                ['email', 'gender'],
+                $data,
+                ['keys' => 'email, gender'],
+                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            ],
         ];
     }
 
     /**
      * @covers ::__construct
      * @covers ::getData
+     * @covers ::getInfo
      * @covers ::setData
      * @covers ::validate
      * @dataProvider dataProvider
@@ -67,11 +88,13 @@ class RequiredWithTest extends RuleTestCase
     public function testCanValidate(
         array $constructor_args,
         array $data,
-        array $expected,
+        array $expected_info,
+        array $expected_success
     ): void {
         $rule = new RequiredWith(...$constructor_args);
         $rule->setData($data);
-        $this->assertValidation($rule, $expected);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

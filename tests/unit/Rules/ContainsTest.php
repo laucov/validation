@@ -44,21 +44,30 @@ class ContainsTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [['quick'], [0]],
-            [[' '], [0, 1]],
-            [['.'], [0, 2]],
-            [['@', '.'], [0, 2, 3]],
+            [['quick'], ['needles' => '"quick"'], [0]],
+            [[' '], ['needles' => '" "'], [0, 1]],
+            [['.'], ['needles' => '"."'], [0, 2]],
+            [['@', '.'], ['needles' => '"@", "."'], [0, 2, 3]],
+            [['@', '.', ' '], ['needles' => '"@", ".", " "'], [0, 1, 2, 3]],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::formatList
+     * @covers ::formatValue
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
-        $this->assertValidation(new Contains(...$arguments), $expected);
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
+        $rule = new Contains(...$arguments);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

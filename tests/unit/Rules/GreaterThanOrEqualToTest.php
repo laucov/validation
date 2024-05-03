@@ -44,28 +44,34 @@ class GreaterThanOrEqualToTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [[80], [0, 2, 3, 6, 8]],
-            [[0], [0, 2, 3, 4, 5, 6, 7, 8, 9]],
-            [[1], [0, 2, 3, 5, 6, 7, 8]],
-            [[-13.00000001], [0, 1, 2, 3, 5, 6, 7, 8, 9]],
-            [['foobar'], [3]],
-            [['eoobar'], [3]],
-            [['Foobar'], [0, 3]],
-            [['Eoobar'], [0, 3]],
-            [[true], [0, 1, 2, 3, 5, 6, 7, 8, 10]],
-            [[false], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+            [[80], ['value' => '80'], [0, 2, 3, 6, 8]],
+            [[0], ['value' => '0'], [0, 2, 3, 4, 5, 6, 7, 8, 9]],
+            [[1], ['value' => '1'], [0, 2, 3, 5, 6, 7, 8]],
+            [[-13.00000001], ['value' => '-13.00000001'], [0, 1, 2, 3, 5, 6, 7, 8, 9]],
+            [['foobar'], ['value' => '"foobar"'], [3]],
+            [['eoobar'], ['value' => '"eoobar"'], [3]],
+            [['Foobar'], ['value' => '"Foobar"'], [0, 3]],
+            [['Eoobar'], ['value' => '"Eoobar"'], [0, 3]],
+            [[true], ['value' => 'true'], [0, 1, 2, 3, 5, 6, 7, 8, 10]],
+            [[false], ['value' => 'false'], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::formatValue
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
         $rule = new GreaterThanOrEqualTo(...$arguments);
-        $this->assertValidation($rule, $expected);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

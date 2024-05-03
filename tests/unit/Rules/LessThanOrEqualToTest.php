@@ -44,27 +44,50 @@ class LessThanOrEqualToTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [[80], [1, 3, 4, 5, 7, 9, 10]],
-            [[0], [1, 4, 9, 10]],
-            [[1], [1, 3, 4, 9, 10]],
-            [[-13.00000001], [3, 4, 10]],
-            [['foobar'], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
-            [['eoobar'], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
-            [['Foobar'], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
-            [['Eoobar'], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
-            [[true], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
-            [[false], [4, 9]],
+            [[80], ['value' => '80'], [1, 3, 4, 5, 7, 9, 10]],
+            [[0], ['value' => '0'], [1, 4, 9, 10]],
+            [[1], ['value' => '1'], [1, 3, 4, 9, 10]],
+            [[-13.00000001], ['value' => '-13.00000001'], [3, 4, 10]],
+            [
+                ['foobar'],
+                ['value' => '"foobar"'],
+                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            ],
+            [
+                ['eoobar'],
+                ['value' => '"eoobar"'],
+                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            ],
+            [
+                ['Foobar'],
+                ['value' => '"Foobar"'],
+                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            ],
+            [
+                ['Eoobar'],
+                ['value' => '"Eoobar"'],
+                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            ],
+            [[true], ['value' => 'true'], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+            [[false], ['value' => 'false'], [4, 9]],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::formatValue
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
-        $this->assertValidation(new LessThanOrEqualTo(...$arguments), $expected);
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
+        $rule = new LessThanOrEqualTo(...$arguments);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

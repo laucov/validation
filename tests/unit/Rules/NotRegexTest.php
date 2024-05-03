@@ -45,21 +45,43 @@ class NotRegexTest extends RuleTestCase
     public function dataProvider(): array
     {
         return [
-            [['/^\p{L}+$/'], [0, 1, 2, 3, 4, 5, 6, 7]],
-            [['/\.com$/'], [0, 1, 4, 5, 6, 7, 8]],
-            [['/^[A-Za-z\d\s\.]+$/'], [2, 3, 4, 5]],
-            [['/^.+[@\?\.]+.+$/'], [0, 1, 6, 7, 8]],
+            [
+                ['/^\p{L}+$/'],
+                ['pattern' => '/^\p{L}+$/'],
+                [0, 1, 2, 3, 4, 5, 6, 7],
+            ],
+            [
+                ['/\.com$/'],
+                ['pattern' => '/\.com$/'],
+                [0, 1, 4, 5, 6, 7, 8],
+            ],
+            [
+                ['/^[A-Za-z\d\s\.]+$/'],
+                ['pattern' => '/^[A-Za-z\d\s\.]+$/'],
+                [2, 3, 4, 5],
+            ],
+            [
+                ['/^.+[@\?\.]+.+$/'],
+                ['pattern' => '/^.+[@\?\.]+.+$/'],
+                [0, 1, 6, 7, 8],
+            ],
         ];
     }
 
     /**
      * @covers ::__construct
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
-    public function testCanValidate(array $arguments, array $expected): void
-    {
-        $this->assertValidation(new NotRegex(...$arguments), $expected);
+    public function testCanValidate(
+        array $arguments,
+        array $expected_info,
+        array $expected_success,
+    ): void {
+        $rule = new NotRegex(...$arguments);
+        $this->assertRuleInfo($rule, $expected_info);
+        $this->assertValidation($rule, $expected_success);
     }
 
     /**

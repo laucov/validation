@@ -29,6 +29,7 @@
 namespace Laucov\Validation\Rules;
 
 use Laucov\Validation\AbstractRule;
+use Laucov\Validation\Rules\Traits\ValueRuleTrait;
 
 /**
  * Requires a value to contain a specific text.
@@ -36,12 +37,14 @@ use Laucov\Validation\AbstractRule;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Contains extends AbstractRule
 {
+    use ValueRuleTrait;
+
     /**
      * List of strings that the value may contain to satisfy this rule.
      * 
      * @var array<string>
      */
-    public array $needles;
+    protected array $needles;
 
     /**
      * Create the rule instance.
@@ -49,6 +52,16 @@ class Contains extends AbstractRule
     public function __construct(string ...$needles)
     {
         $this->needles = $needles;
+    }
+
+    /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    public function getInfo(): array
+    {
+        return ['needles' => $this->formatList($this->needles)];
     }
 
     /**

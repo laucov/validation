@@ -50,12 +50,15 @@ class RequiredTest extends RuleTestCase
 
     /**
      * @covers ::__construct
+     * @covers ::getInfo
      * @covers ::validate
      * @dataProvider dataProvider
      */
     public function testCanValidate(array $arguments, array $expected): void
     {
-        $this->assertValidation(new Required(), $expected);
+        $rule = new Required();
+        $this->assertRuleInfo($rule, []);
+        $this->assertValidation($rule, $expected);
     }
 
     /**

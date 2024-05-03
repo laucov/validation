@@ -29,6 +29,7 @@
 namespace Laucov\Validation\Rules;
 
 use Laucov\Validation\AbstractRule;
+use Laucov\Validation\Rules\Traits\ValueRuleTrait;
 
 /**
  * Requires a value to be greater than the provided parameter.
@@ -36,6 +37,8 @@ use Laucov\Validation\AbstractRule;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class GreaterThan extends AbstractRule
 {
+    use ValueRuleTrait;
+
     /**
      * Create the rule instance.
      */
@@ -43,8 +46,18 @@ class GreaterThan extends AbstractRule
         /**
          * Value to compare.
          */
-        public bool|int|float|string $value,
+        protected bool|int|float|string $value,
     ) {
+    }
+
+    /**
+     * Get the rule's info.
+     * 
+     * @return array<string>
+     */
+    public function getInfo(): array
+    {
+        return ['value' => $this->formatValue($this->value)];
     }
 
     /**
