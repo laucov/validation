@@ -48,6 +48,18 @@ class Ruleset
     protected array $errors = [];
 
     /**
+     * Whether the value is always required.
+     */
+    protected bool $required = false;
+
+    /**
+     * Keys that - when not empty - make the value required.
+     * 
+     * @var array<string>
+     */
+    protected array $requiredWith = [];
+
+    /**
      * Registered rules.
      * 
      * @var array<RuleInterface>
@@ -65,10 +77,30 @@ class Ruleset
 
     /**
      * Get current errors.
+     * 
+     * @return array<Error>
      */
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * Make the value always required.
+     */
+    public function require(bool $required = true): static
+    {
+        $this->required = $required;
+        return $this;
+    }
+
+    /**
+     * Make the value required when the given keys exist in the context data.
+     */
+    public function requireWith(string ...$keys): static
+    {
+        $this->requiredWith = $keys;
+        return $this;
     }
 
     /**
@@ -85,15 +117,78 @@ class Ruleset
      */
     public function validate(mixed $value): bool
     {
+        // Empty errors.
         $this->errors = [];
 
+        // Check empty value.
+        if ($this->isEmpty($value)) {
+            // Check if is required.
+            if (!$this->isRequired()) {
+                return true;
+            }
+            // Set error.
+            if ($this->required) {
+                $rule_name = 'required';
+                $params = [];
+            } else {
+                $rule_name = 'required_with';
+                $params = ['keys' => implode(', ', $this->requiredWith)];
+            }
+            $this->errors[] = new Error($rule_name, $params);
+            return false;
+        }
+
+        // Validate each rule.
         foreach ($this->rules as $rule) {
             $rule->setData($this->data);
             if (!$rule->validate($value)) {
-                $this->errors[] = $rule;
+                $this->errors[] = Error::createFromRule($rule);
             }
         }
 
         return count($this->errors) === 0;
+    }
+
+    /**
+     * Check whether `$data` has the given key.
+     */
+    protected function hasKey(string $key): bool
+    {
+        return is_array($this->data)
+            ? isset($this->data[$key])
+            : isset($this->data->$key);
+    }
+
+    /**
+     * Check whether a value is empty.
+     */
+    protected function isEmpty(mixed $value): bool
+    {
+        return $value === null || $value === '' || $value === [];
+    }
+
+    /**
+     * Check whether the value is currently required.
+     */
+    protected function isRequired(): bool
+    {
+        // Check if is always required.
+        if ($this->required) {
+            return true;
+        }
+
+        // Check if is conditionally required.
+        if (count($this->requiredWith) === 0) {
+            return false;
+        }
+
+        // Check if all data keys are present.
+        foreach ($this->requiredWith as $key) {
+            if (!$this->hasKey($key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
