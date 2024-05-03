@@ -32,6 +32,8 @@ use Laucov\Validation\AbstractRule;
 
 /**
  * Requires a value to contain a non-empty value.
+ * 
+ * @deprecated 1.0.0 Use `\Laucov\Validation\Ruleset->require()` instead.
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Required extends AbstractRule
