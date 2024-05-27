@@ -41,6 +41,8 @@ class ErrorTest extends TestCase
 {
     /**
      * @covers ::createFromRule
+     * @uses Laucov\Validation\AbstractRule::getMessage
+     * @uses Laucov\Validation\AbstractRule::setMessage
      * @uses Laucov\Validation\Error::__construct
      * @uses Laucov\Validation\Rules\GreaterThan::__construct
      * @uses Laucov\Validation\Rules\GreaterThan::getInfo
@@ -48,10 +50,21 @@ class ErrorTest extends TestCase
      */
     public function testCanCreateFromRule(): void
     {
-        $error = Error::createFromRule(new GreaterThan(10));
+        // Create from rule.
+        $rule = new GreaterThan(10);
+        $error = Error::createFromRule($rule);
         $this->assertSame(GreaterThan::class, $error->rule);
         $this->assertCount(1, $error->parameters);
         $this->assertSame('10', $error->parameters['value']);
+        $this->assertNull($error->message);
+
+        // Add a message.
+        $rule->setMessage('Should be greater than 10.');
+        $error = Error::createFromRule($rule);
+        $this->assertSame(GreaterThan::class, $error->rule);
+        $this->assertCount(1, $error->parameters);
+        $this->assertSame('10', $error->parameters['value']);
+        $this->assertSame('Should be greater than 10.', $error->message);
     }
 
     /**
@@ -59,12 +72,26 @@ class ErrorTest extends TestCase
      */
     public function testCanInstantiate(): void
     {
-        $error = new Error('foobar', ['foo' => 'bar', 'baz' => '42']);
-        $this->assertSame('foobar', $error->rule);
+        // Create error without message.
+        $error = new Error('length', ['min' => '8', 'max' => '16']);
+        $this->assertSame('length', $error->rule);
         $this->assertIsArray($error->parameters);
         $this->assertCount(2, $error->parameters);
-        $this->assertSame('bar', $error->parameters['foo']);
-        $this->assertSame('42', $error->parameters['baz']);
+        $this->assertSame('8', $error->parameters['min'] ?? null);
+        $this->assertSame('16', $error->parameters['max'] ?? null);
+        $this->assertNull($error->message);
+
+        // Create error with message.
+        $error = new Error(
+            'ends_with',
+            ['value' => 'bar'],
+            'The value should end with "bar".',
+        );
+        $this->assertSame('ends_with', $error->rule);
+        $this->assertIsArray($error->parameters);
+        $this->assertCount(1, $error->parameters);
+        $this->assertSame('bar', $error->parameters['value'] ?? null);
+        $this->assertSame('The value should end with "bar".', $error->message);
     }
 
     /**

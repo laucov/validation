@@ -34,9 +34,12 @@ use Laucov\Validation\Interfaces\RuleInterface;
  */
 class Error
 {
+    /**
+     * Create an error instance from a rule instance.
+     */
     public static function createFromRule(RuleInterface $rule): Error
     {
-        return new Error($rule::class, $rule->getInfo());
+        return new Error($rule::class, $rule->getInfo(), $rule->getMessage());
     }
 
     /**
@@ -52,6 +55,11 @@ class Error
          * Rule formatted parameters.
          */
         public array $parameters,
+
+        /**
+         * Custom message.
+         */
+        public null|string $message = null,
     ) {
         // Check parameters.
         foreach ($this->parameters as $parameter) {

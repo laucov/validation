@@ -41,6 +41,11 @@ abstract class AbstractRule implements RuleInterface
     protected object $data;
 
     /**
+     * Custom error message.
+     */
+    protected null|string $message = null;
+
+    /**
      * Get the rule's info.
      * 
      * @return array<string>
@@ -53,11 +58,27 @@ abstract class AbstractRule implements RuleInterface
     abstract public function validate(mixed $value): bool;
 
     /**
+     * Get the rule's custom error message, if previously set.
+     */
+    public function getMessage(): null|string
+    {
+        return $this->message;
+    }
+
+    /**
      * Set data to contextualize the next validated values.
      */
     public function setData(array|object $data): void
     {
         $this->data = (object) $data;
+    }
+
+    /**
+     * Set a custom error message for the rule.
+     */
+    public function setMessage(string $message): void
+    {
+        $this->message = $message;
     }
 
     /**

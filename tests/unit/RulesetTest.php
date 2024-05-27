@@ -53,7 +53,9 @@ class RulesetTest extends TestCase
      * @covers ::addRule
      * @covers ::getErrors
      * @covers ::validate
+     * @uses Laucov\Validation\AbstractRule::getMessage
      * @uses Laucov\Validation\AbstractRule::setData
+     * @uses Laucov\Validation\AbstractRule::setMessage
      * @uses Laucov\Validation\Error::__construct
      * @uses Laucov\Validation\Error::createFromRule
      * @uses Laucov\Validation\Rules\Length::__construct
@@ -107,8 +109,10 @@ class RulesetTest extends TestCase
 
     /**
      * @covers ::setData
-     * @uses Laucov\Validation\AbstractRule::setData
      * @uses Laucov\Validation\AbstractRule::getData
+     * @uses Laucov\Validation\AbstractRule::getMessage
+     * @uses Laucov\Validation\AbstractRule::setData
+     * @uses Laucov\Validation\AbstractRule::setMessage
      * @uses Laucov\Validation\Error::__construct
      * @uses Laucov\Validation\Error::createFromRule
      * @uses Laucov\Validation\Rules\Regex::__construct
@@ -185,7 +189,9 @@ class RulesetTest extends TestCase
      * @covers ::require
      * @covers ::requireWith
      * @covers ::validate
+     * @uses Laucov\Validation\AbstractRule::getMessage
      * @uses Laucov\Validation\AbstractRule::setData
+     * @uses Laucov\Validation\AbstractRule::setMessage
      * @uses Laucov\Validation\Error::__construct
      * @uses Laucov\Validation\Error::createFromRule
      * @uses Laucov\Validation\Rules\GreaterThan::__construct

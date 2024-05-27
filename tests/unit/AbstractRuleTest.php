@@ -26,37 +26,35 @@
  * @copyright © 2024 Laucov Serviços de Tecnologia da Informação Ltda.
  */
 
-namespace Laucov\Validation\Interfaces;
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use Laucov\Validation\AbstractRule;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Validates values.
+ * @coversDefaultClass \Laucov\Validation\AbstractRule
  */
-interface RuleInterface
+class AbstractRuleTest extends TestCase
 {
     /**
-     * Get the rule's info.
-     * 
-     * @return array<string>
+     * @covers ::getMessage
+     * @covers ::setMessage
      */
-    public function getInfo(): array;
+    public function testCanSetMessage(): void
+    {
+        // Create mock.
+        /** @var AbstractRule */
+        $mock = $this->getMockBuilder(AbstractRule::class)
+            ->onlyMethods([])
+            ->getMockForAbstractClass();
 
-    /**
-     * Get the rule's custom error message, if previously set.
-     */
-    public function getMessage(): null|string;
-
-    /**
-     * Set data to contextualize the next validated values.
-     */
-    public function setData(array|object $data): void;
-
-    /**
-     * Set a custom error message for the rule.
-     */
-    public function setMessage(string $message): void;
-
-    /**
-     * Validate a single value.
-     */
-    public function validate(mixed $value): bool;
+        // Assert that the message is null initially.
+        $this->assertNull($mock->getMessage());
+        
+        // Set message.
+        $mock->setMessage('Something is wrong!');
+        $this->assertSame('Something is wrong!', $mock->getMessage());
+    }
 }
