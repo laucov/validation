@@ -48,6 +48,11 @@ class Ruleset
     protected array $errors = [];
 
     /**
+     * Message to use when a "required" or "required_with" error is created.
+     */
+    protected null|string $obligatorinessMessage = null;
+
+    /**
      * Whether the value is always required.
      */
     protected bool $required = false;
@@ -88,18 +93,11 @@ class Ruleset
     /**
      * Make the value always required.
      */
-    public function require(bool $required = true): static
+    public function require(null|array $with = null, $message = null): static
     {
-        $this->required = $required;
-        return $this;
-    }
-
-    /**
-     * Make the value required when the given keys exist in the context data.
-     */
-    public function requireWith(string ...$keys): static
-    {
-        $this->requiredWith = $keys;
+        $this->required = $with === null;
+        $this->requiredWith = $with ?? [];
+        $this->obligatorinessMessage = $message;
         return $this;
     }
 
@@ -134,7 +132,8 @@ class Ruleset
                 $rule_name = 'required_with';
                 $params = ['keys' => implode(', ', $this->requiredWith)];
             }
-            $this->errors[] = new Error($rule_name, $params);
+            $message = $this->obligatorinessMessage;
+            $this->errors[] = new Error($rule_name, $params, $message);
             return false;
         }
 

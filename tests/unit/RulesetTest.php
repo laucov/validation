@@ -35,7 +35,6 @@ use Laucov\Validation\Interfaces\RuleInterface;
 use Laucov\Validation\Rules\GreaterThan;
 use Laucov\Validation\Rules\Length;
 use Laucov\Validation\Rules\Regex;
-use Laucov\Validation\Rules\RequiredWith;
 use Laucov\Validation\Ruleset;
 use PHPUnit\Framework\TestCase;
 
@@ -117,15 +116,11 @@ class RulesetTest extends TestCase
      * @uses Laucov\Validation\Error::createFromRule
      * @uses Laucov\Validation\Rules\Regex::__construct
      * @uses Laucov\Validation\Rules\Regex::validate
-     * @uses Laucov\Validation\Rules\RequiredWith::__construct
-     * @uses Laucov\Validation\Rules\RequiredWith::getInfo
-     * @uses Laucov\Validation\Rules\RequiredWith::validate
      * @uses Laucov\Validation\Ruleset::addRule
      * @uses Laucov\Validation\Ruleset::getErrors
      * @uses Laucov\Validation\Ruleset::hasKey
      * @uses Laucov\Validation\Ruleset::isEmpty
      * @uses Laucov\Validation\Ruleset::isRequired
-     * @uses Laucov\Validation\Ruleset::requireWith
      * @uses Laucov\Validation\Ruleset::validate
      */
     public function testCanSetData(): void
@@ -182,12 +177,77 @@ class RulesetTest extends TestCase
     }
 
     /**
+     * @coversNothing
+     */
+    public function testCanUseCustomMessages(): void
+    {
+        // Add rules.
+        $length_rule = new Length(4);
+        $regex_rule = new Regex('/^foo/');
+        $this->ruleset->addRule($length_rule, $regex_rule);
+
+        // Test "Length" without messages.
+        $this->assertFalse($this->ruleset->validate('bar'));
+        $errors = $this->ruleset->getErrors();
+        $this->assertNull($errors[0]->message);
+        // Test "Regex" without messages.
+        $this->assertFalse($this->ruleset->validate('foo'));
+        $errors = $this->ruleset->getErrors();
+        $this->assertNull($errors[0]->message);
+
+        // Set messages.
+        $length_rule->setMessage('Too short!');
+        $regex_rule->setMessage('Must start with "foo"!');
+
+        // Test "Length" with messages.
+        $this->assertFalse($this->ruleset->validate('foo'));
+        $errors = $this->ruleset->getErrors();
+        $this->assertSame('Too short!', $errors[0]->message);
+        // Test "Regex" with messages.
+        $this->assertFalse($this->ruleset->validate('hello'));
+        $errors = $this->ruleset->getErrors();
+        $this->assertSame('Must start with "foo"!', $errors[0]->message);
+
+        // Set the value as required.
+        $this->ruleset->require();
+
+        // Test "required" without message.
+        $this->assertFalse($this->ruleset->validate(''));
+        $errors = $this->ruleset->getErrors();
+        $this->assertNull($errors[0]->message);
+
+        // Set as required with message.
+        $this->ruleset->require(null, 'Mandatory value!');
+
+        // Test "required" with message.
+        $this->assertFalse($this->ruleset->validate(''));
+        $errors = $this->ruleset->getErrors();
+        $this->assertSame('Mandatory value!', $errors[0]->message);
+
+        // Set as conditionally required without message.
+        $this->ruleset->setData(['a' => 'Some value.']);
+        $this->ruleset->require(['a']);
+
+        // Test "required_with" without message.
+        $this->assertFalse($this->ruleset->validate(''));
+        $errors = $this->ruleset->getErrors();
+        $this->assertNull($errors[0]->message);
+
+        // Set as conditionally required with message.
+        $this->ruleset->require(['a'], 'Mandatory if "a" is present!');
+
+        // Test "required_with" without message.
+        $this->assertFalse($this->ruleset->validate(''));
+        $errors = $this->ruleset->getErrors();
+        $this->assertSame('Mandatory if "a" is present!', $errors[0]->message);
+    }
+
+    /**
      * @covers ::addRule
      * @covers ::hasKey
      * @covers ::isEmpty
      * @covers ::isRequired
      * @covers ::require
-     * @covers ::requireWith
      * @covers ::validate
      * @uses Laucov\Validation\AbstractRule::getMessage
      * @uses Laucov\Validation\AbstractRule::setData
@@ -213,7 +273,7 @@ class RulesetTest extends TestCase
 
         // Test conditionally required value.
         $this->ruleset
-            ->requireWith('foo', 'baz')
+            ->require(['foo', 'baz'])
             ->setData(['bar' => 'abc']);
         $this->assertTrue($this->ruleset->validate(1));
         $this->assertFalse($this->ruleset->validate(0));
@@ -245,26 +305,6 @@ class RulesetTest extends TestCase
         $this->assertIsObject($errors[0]);
         $this->assertSame('required', $errors[0]->rule);
         $this->assertCount(0, $errors[0]->parameters);
-
-        // Remove requirements.
-        $this->ruleset
-            ->require(false)
-            ->requireWith();
-        $this->assertTrue($this->ruleset->validate(1));
-        $this->assertFalse($this->ruleset->validate(0));
-        $this->assertTrue($this->ruleset->validate(null));
-        $this->assertTrue($this->ruleset->validate(''));
-        $this->assertTrue($this->ruleset->validate([]));
-
-        // Require with explicit bool value.
-        $this->ruleset
-            ->require(true)
-            ->setData([]);
-        $this->assertTrue($this->ruleset->validate(1));
-        $this->assertFalse($this->ruleset->validate(0));
-        $this->assertFalse($this->ruleset->validate(null));
-        $this->assertFalse($this->ruleset->validate(''));
-        $this->assertFalse($this->ruleset->validate([]));
     }
 
     /**
