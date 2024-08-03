@@ -87,32 +87,16 @@ abstract class RuleTestCase extends TestCase
      */
     protected function assertRejectsNonScalarValues(RuleInterface $rule): void
     {
-        // Set example values.
-        $values = [
-            null,
-            [],
-            [[]],
-            [1, 2],
-            ['a', 'b', 'c'],
-            [null, 'a', 1.23, []],
-            new \stdClass(),
-            fopen('data://text/plain,foobar', 'r'),
-            function () {},
-            fn ($foo) => 'bar',
-        ];
-
-        // Test each value.
+        $values = $this->getNonScalarValues();
         foreach ($values as $value) {
             if ($rule->validate($value)) {
-                // Set detailed error message.
-                $message = 'Failed to assert that %s only accepts scalar '
-                    . 'values. The following value passed validation: %s';
+                $class_name = array_slice(explode('\\', $rule::class), -1)[0];
                 $export = var_export($value, true);
-                $class_name = get_class($rule);
+                $message = 'Failed to assert that %s expects scalar values.'
+                    . PHP_EOL . '$rule->validate(%s) returned true.';
                 $this->fail(sprintf($message, $class_name, $export));
             }
         }
-
         $this->assertTrue(true);
     }
 
@@ -121,14 +105,18 @@ abstract class RuleTestCase extends TestCase
      */
     protected function assertRuleInfo(RuleInterface $rule, array $expected): void
     {
-        // Get info.
+        $class_name = array_slice(explode('\\', $rule::class), -1)[0];
         $actual = $rule->getInfo();
-        $message = 'Assert rule information output.';
-
-        // Compare keys and values.
-        $this->assertContainsOnly('string', $actual);
+        $message = 'Assert that %s->getInfo() only contains strings.';
+        $message = sprintf($message, $class_name);
+        $this->assertContainsOnly('string', $actual, message: $message);
         foreach ($expected as $key => $value) {
+            $message = 'Assert that %s->getInfo()["%s"] exists.';
+            $message = sprintf($message, $class_name, $key);
             $this->assertArrayHasKey($key, $actual, $message);
+            $message = 'Assert that %s->getInfo()["%s"] is %s.';
+            $export = var_export($value, true);
+            $message = sprintf($message, $class_name, $key, $export);
             $this->assertSame($value, $actual[$key], $message);
         }
 
@@ -148,9 +136,33 @@ abstract class RuleTestCase extends TestCase
         RuleInterface $rule,
         array $expected,
     ): void {
-        $actual = array_filter($this->getValues(), [$rule, 'validate']);
-        $actual = '[' . implode(', ', array_keys($actual)) . ']';
-        $expected = '[' . implode(', ', $expected) . ']';
-        $this->assertSame($expected, $actual);
+        $class_name = array_slice(explode('\\', $rule::class), -1)[0];
+        foreach ($this->getValues() as $i => $value) {
+            $export = var_export($value, true);
+            $is_valid = in_array($i, $expected, true);
+            $state = $is_valid ? 'valid' : 'not valid.';
+            $message = 'Assert that %s->validate(%s) is %s.';
+            $message = sprintf($message, $class_name, $export, $state);
+            $this->assertSame($is_valid, $rule->validate($value), $message);
+        }
+    }
+
+    /**
+     * Get test non-scalar values.
+     */
+    protected function getNonScalarValues(): array
+    {
+        return [
+            null,
+            [],
+            [[]],
+            [1, 2],
+            ['a', 'b', 'c'],
+            [null, 'a', 1.23, []],
+            new \stdClass(),
+            fopen('data://text/plain,foobar', 'r'),
+            function () {},
+            fn ($foo) => 'bar',
+        ];
     }
 }
